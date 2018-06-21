@@ -10,11 +10,21 @@ import UIKit
 
 class TodoListViewController: UITableViewController {
 
+    // instance variables
     var itemArray = ["Find Mike", "Buy Eggos", "Destroy Demogorgon"]
+    let defaults = UserDefaults.standard
+    
+    
     @IBOutlet var todoTableView : UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if let loadedArray = defaults.array(forKey: "TodoListArray") as? [String] {
+            itemArray = loadedArray
+        }
+       
+
         // Do any additional setup after loading the view, typically from a nib.
     }
 
@@ -42,6 +52,7 @@ class TodoListViewController: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
         
     }
+    
     //MARK: Adding new items to list
     
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
@@ -50,12 +61,11 @@ class TodoListViewController: UITableViewController {
         let confirmAction = UIAlertAction(title: "Add", style: .default) { (action) in
             if let alertTextField = addItemAlert.textFields?[0].text {
                 self.itemArray.append(alertTextField)
+                self.defaults.set(self.itemArray, forKey: "TodoListArray")
                 self.todoTableView.reloadData()
             }
-                       
         }
-        
-        
+    
         let cancelAction = UIAlertAction(title: "Cancel", style: .default) { (action) in }
         
         addItemAlert.addTextField { (alertTextField) in
@@ -66,9 +76,6 @@ class TodoListViewController: UITableViewController {
         addItemAlert.addAction(cancelAction)
         
         self.present(addItemAlert,animated: true, completion: nil)
-        
-        
     }
-    
 }
 
