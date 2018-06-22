@@ -8,7 +8,7 @@
 
 import Foundation
 
-class ToDoItemData {
+class ToDoItemData: Codable {
     var description: String = ""
     var isCompleted: Bool = false
     }
