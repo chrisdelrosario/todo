@@ -17,13 +17,12 @@ class TodoListViewController: UITableViewController {
 
     
     //IBOutlets
-    @IBOutlet var todoTableView : UITableView!
+    @IBOutlet var todoTableView: UITableView!
     @IBOutlet var searchBar: UISearchBar!
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print (FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
         loadData()
     }
 
@@ -35,7 +34,7 @@ class TodoListViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = todoTableView.dequeueReusableCell(withIdentifier: "toDoItem", for: indexPath)
+        let cell = todoTableView.dequeueReusableCell(withIdentifier: "toDoItemID", for: indexPath)
         let currentItem = itemArray[indexPath.row]
         cell.textLabel?.text = currentItem.descriptionText
         cell.accessoryType = currentItem.completedFlag ? .checkmark : .none
