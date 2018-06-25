@@ -29,8 +29,6 @@ class CategoryViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return categoryArray.count
     }
-
-    //MARK: - Table view delegate methods
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "categoryItemID", for: indexPath)
@@ -38,7 +36,22 @@ class CategoryViewController: UITableViewController {
         cell.textLabel?.text = currentCategory.descriptionText
         return cell
     }
+
+    //MARK: - Table view delegate methods
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        performSegue(withIdentifier: "goToItemsID", sender: self)
+    }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let destinationVC = segue.destination as! TodoListViewController
+        
+        if let indexPath = tableView.indexPathForSelectedRow {
+            destinationVC.categoryClicked = categoryArray[indexPath.row]
+        } else {
+            
+        }
+    }
+   
     //MARK: IBActions
     
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
@@ -47,22 +60,21 @@ class CategoryViewController: UITableViewController {
          let addCategoryAlert = UIAlertController(title: "Add New Category", message: "" , preferredStyle: .alert)
          let confirmAction = UIAlertAction(title: "Add", style: .default) { (action) in
          
-         let categoryItemEntry = CategoryItem(context: self.context)
-         categoryItemEntry.descriptionText = entryTextField.text
-         self.categoryArray.append(categoryItemEntry)
-         self.saveData()
+             let categoryItemEntry = CategoryItem(context: self.context)
+             categoryItemEntry.descriptionText = entryTextField.text
+             self.categoryArray.append(categoryItemEntry)
+             self.saveData()
          }
          
          let cancelAction = UIAlertAction(title: "Cancel", style: .default) { (action) in }
          
-         addCategoryAlert.addTextField { (textField) in
-         entryTextField.placeholder = "Enter here"
-         entryTextField = textField
+             addCategoryAlert.addTextField { (textField) in
+             entryTextField.placeholder = "Enter new category name here"
+             entryTextField = textField
          }
          
          addCategoryAlert.addAction(confirmAction)
          addCategoryAlert.addAction(cancelAction)
-         
          self.present(addCategoryAlert,animated: true, completion: nil)
     
     }
@@ -86,5 +98,7 @@ class CategoryViewController: UITableViewController {
         categoryTableView.reloadData()
         
     }
+    
+    
 
 }

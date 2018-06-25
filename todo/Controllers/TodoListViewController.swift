@@ -11,19 +11,23 @@ import CoreData
 
 class TodoListViewController: UITableViewController {
 
+ 
+    
+    //IBOutlets
+    @IBOutlet var searchBar: UISearchBar!
+    
     // instance variables
     var itemArray = [ToDoItem]()
     let context = (UIApplication.shared.delegate as! AppDelegate ).persistentContainer.viewContext
+    var categoryClicked : CategoryItem? {
+        didSet {
+            loadData()
+        }
+    }
 
-    
-    //IBOutlets
-    @IBOutlet var todoTableView: UITableView!
-    @IBOutlet var searchBar: UISearchBar!
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadData()
+        
     }
 
     //MARK: TableView Datasource Methods
@@ -34,7 +38,7 @@ class TodoListViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = todoTableView.dequeueReusableCell(withIdentifier: "toDoItemID", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "toDoItemID", for: indexPath)
         let currentItem = itemArray[indexPath.row]
         cell.textLabel?.text = currentItem.descriptionText
         cell.accessoryType = currentItem.completedFlag ? .checkmark : .none
@@ -61,6 +65,7 @@ class TodoListViewController: UITableViewController {
                 let toDoItemEntry = ToDoItem(context: self.context)
                 toDoItemEntry.descriptionText = entryTextField.text
                 toDoItemEntry.completedFlag = false
+                toDoItemEntry.parentCategory = self.categoryClicked
                 self.itemArray.append(toDoItemEntry)
                 self.saveData()
         }
@@ -82,23 +87,32 @@ class TodoListViewController: UITableViewController {
     
     func saveData() {
         
+        
         do {
            try context.save()
         } catch {
             print ("Error saving context: \(error)")
         }
-        todoTableView.reloadData()
+        tableView.reloadData()
     }
     
-    func loadData(with request:NSFetchRequest<ToDoItem> = ToDoItem.fetchRequest()) {
+    func loadData(with request:NSFetchRequest<ToDoItem> = ToDoItem.fetchRequest(), predicate: NSPredicate? = nil) {
+        
+        let categoryPredicate = NSPredicate(format: "parentCategory.descriptionText MATCHES %@", categoryClicked!.descriptionText!)
+        
+        if let searchPredicate = predicate {
+            request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, searchPredicate])
+        } else {
+            request.predicate = categoryPredicate
+        }
+        
         do {
             itemArray = try context.fetch(request)
         }
         catch {
             print ("Error Fetching Data: \(error)")
         }
-        todoTableView.reloadData()
-
+        tableView.reloadData()
     }
 }
 
@@ -106,9 +120,9 @@ class TodoListViewController: UITableViewController {
 extension TodoListViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         let request: NSFetchRequest<ToDoItem> = ToDoItem.fetchRequest()
-        request.predicate  = NSPredicate(format: "descriptionText CONTAINS[cd] %@", searchBar.text!)
+        let searchPredicate  = NSPredicate(format: "descriptionText CONTAINS[cd] %@", searchBar.text!)
         request.sortDescriptors = [NSSortDescriptor(key: "descriptionText", ascending: true)]
-        loadData(with: request)
+        loadData(with: request, predicate: searchPredicate)
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
@@ -120,9 +134,9 @@ extension TodoListViewController: UISearchBarDelegate {
             
         } else {
             let request: NSFetchRequest<ToDoItem> = ToDoItem.fetchRequest()
-            request.predicate  = NSPredicate(format: "descriptionText CONTAINS[cd] %@", searchBar.text!)
+            let searchPredicate  = NSPredicate(format: "descriptionText CONTAINS[cd] %@", searchBar.text!)
             request.sortDescriptors = [NSSortDescriptor(key: "descriptionText", ascending: true)]
-            loadData(with: request)
+            loadData(with: request, predicate: searchPredicate)
         }
     }
     

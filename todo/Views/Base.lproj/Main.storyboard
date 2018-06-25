@@ -36,8 +36,8 @@
                             </tableViewCell>
                         </prototypes>
                         <connections>
-                            <outlet property="dataSource" destination="kQO-fU-eve" id="1gT-0x-66i"/>
-                            <outlet property="delegate" destination="kQO-fU-eve" id="q0d-nV-4iZ"/>
+                            <outlet property="dataSource" destination="kQO-fU-eve" id="1oP-9E-3lo"/>
+                            <outlet property="delegate" destination="kQO-fU-eve" id="yqi-rp-o8j"/>
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Items" id="llh-bv-S9t">
@@ -49,7 +49,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="todoTableView" destination="4ns-kj-fOu" id="xm6-p0-xcc"/>
+                        <outlet property="searchBar" destination="vXI-hE-XJS" id="ZeC-Vo-aLN"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eTf-Sr-5sF" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -111,7 +111,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="categoryTableView" destination="1jm-V5-MMa" id="SGA-Gr-Cxh"/>
-                        <segue destination="kQO-fU-eve" kind="show" identifier="goToItems" id="egy-MW-DsZ"/>
+                        <segue destination="kQO-fU-eve" kind="show" identifier="goToItemsID" id="egy-MW-DsZ"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nMd-hu-wEb" userLabel="First Responder" sceneMemberID="firstResponder"/>
